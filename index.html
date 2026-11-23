@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poster & Detail Portfolio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Unbounded:wght@600;800&display=swap">
+<style>
+/* Layout: dark gallery wall. Oversized poster-style wordmark on top, then four sections
+   (posters in masonry columns, illustration artboards, workplace promo boards, text list of detail pages). */
+:root {
+  --bg: #0e0c14;
+  --surface: #181523;
+  --fg: #f3f0f8;
+  --muted: #a39eb4;
+  --line: #2b2739;
+  --accent: #ff8a1f;
+  --display: 'Unbounded', 'Noto Sans KR', system-ui, sans-serif;
+  --body: 'Noto Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 15px/1.7 var(--body);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* hero */
+.hero { padding-block: clamp(40px, 9vw, 112px) clamp(40px, 6vw, 72px); }
+.hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px 48px; align-items: end; }
+.eyebrow { font: 600 .72rem/1 var(--display); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 0 0 20px; }
+h1 {
+  margin: 0;
+  font: 800 clamp(2.8rem, 11.5vw, 8.2rem)/.95 var(--display);
+  letter-spacing: -.03em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+h1 .amp { color: var(--accent); }
+.who { margin: 0 0 10px; font: 700 clamp(1.5rem, 4vw, 2rem)/1.2 var(--body); }
+.lede { margin: 0 0 28px; max-width: 40ch; color: var(--muted); font-size: 1rem; }
+.index { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.index a {
+  display: flex; justify-content: space-between; gap: 16px; align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid var(--line); text-decoration: none;
+  font: 600 .8rem/1.2 var(--display); letter-spacing: .06em; text-transform: uppercase;
+}
+.index a:hover { color: var(--accent); }
+.index .n { font-family: var(--body); font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+
+/* sections */
+.section { padding-block: clamp(40px, 7vw, 88px); border-top: 1px solid var(--line); scroll-margin-top: 8px; }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin: 0 0 clamp(24px, 4vw, 44px); }
+h2 { margin: 0; font: 600 clamp(1.3rem, 4vw, 2.1rem)/1.15 var(--display); letter-spacing: -.01em; text-transform: uppercase; }
+.section-head .kr { color: var(--muted); font-size: .95rem; }
+.section-head .count { margin-left: auto; color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+
+/* pieces */
+.piece {
+  display: block; width: 100%; margin: 0; padding: 0; border: 0;
+  background: var(--surface); cursor: zoom-in; color: inherit; font: inherit; text-align: left;
+}
+.piece img { display: block; width: 100%; height: auto; }
+figure { margin: 0; min-width: 0; }
+figcaption { margin-top: 10px; font-size: .85rem; line-height: 1.5; color: var(--muted); }
+figcaption strong { display: block; color: var(--fg); font-weight: 500; }
+
+.masonry { column-count: 3; column-gap: 20px; }
+.masonry figure { break-inside: avoid; margin-bottom: 28px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; align-items: start; }
+.grid-3 + .grid-2 { margin-top: 36px; }
+
+/* detail pages */
+.project { padding-block: 32px 40px; border-top: 1px solid var(--line); }
+.projects > .project:first-child { border-top: 0; padding-top: 0; }
+.project-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 6px 32px; align-items: baseline; margin-bottom: 18px; }
+.project-head h3 { margin: 0; font: 500 1.1rem/1.4 var(--body); }
+.project-head p { margin: 0; color: var(--muted); }
+.grid-1 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+.project .grid-2 { gap: 20px; }
+
+footer { padding-block: 32px 56px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+
+/* lightbox */
+.lb {
+  position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+  padding: max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  background: rgba(8, 7, 12, .95); cursor: zoom-out;
+}
+.lb img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.lb button {
+  position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); right: max(14px, env(safe-area-inset-right, 0px));
+  width: 44px; height: 44px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .masonry { column-count: 2; }
+  .hero-grid { grid-template-columns: 1fr; }
+  .lede { max-width: 40ch; }
+}
+@media (max-width: 640px) {
+  .masonry { column-gap: 12px; }
+  .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .grid-3 figure:first-child { grid-column: 1 / -1; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .project-head { grid-template-columns: 1fr; }
+  .section-head .count { margin-left: 0; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<style>
+[hidden] { display: none !important; }
+body { margin: 0; }
+img { max-width: 100%; }
+</style>
+</head>
+<body>
+<header class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">Portfolio 2026</p>
+      <h1>Poster<br><span class="amp">&amp;</span> Detail<br>Page</h1>
+    </div>
+    <div>
+      <p class="who">박은주</p>
+      <p class="lede">포스터, 일러스트, 매장 홍보물, 상세페이지 등 다양한 디자인 경험이 있습니다.</p>
+      <ul class="index">
+        <li><a href="#poster"><span>Art Poster</span><span class="n">5</span></a></li>
+        <li><a href="#illustration"><span>Illustration</span><span class="n">5</span></a></li>
+        <li><a href="#lotte"><span>Lotte FITIN</span><span class="n">10</span></a></li>
+        <li><a href="#detail"><span>Detail Page</span><span class="n">6</span></a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" id="poster">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Art Poster</h2><span class="kr">아트 포스터</span><span class="count">5 works</span>
+      </div>
+      <div class="masonry">
+        <figure>
+          <button class="piece" type="button" data-full="img/dandelion.jpg"><img src="img/dandelion.jpg" width="1400" height="1982" alt="Dandelion 포스터. 주황색 꽃 모양 3D 도형과 링, 고양이 실루엣이 어우러진 그래픽"></button>
+          <figcaption><strong>Dandelion</strong>Art Poster</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/perfect-illumination.jpg"><img src="img/perfect-illumination.jpg" width="1400" height="1979" alt="Perfect Illumination 포스터. 크롬 질감의 푸른 꽃 3D 오브제"></button>
+          <figcaption><strong>Perfect Illumination</strong>Art Poster · Blender 활용</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/satellite.jpg"><img src="img/satellite.jpg" width="1400" height="1980" alt="Satellite 포스터. 검은 배경 위 은빛 천사 조각상과 반복되는 타이포그래피"></button>
+          <figcaption><strong>Satellite</strong>Art Poster</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/cool-with-you.jpg"><img src="img/cool-with-you.jpg" width="1296" height="1728" alt="Cool With You 포스터. 번개와 체인 위에 떠 있는 홀로그램 캐릭터"></button>
+          <figcaption><strong>Cool With You</strong>Art Poster</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/bukbu.jpg"><img src="img/bukbu.jpg" width="1100" height="1600" alt="서울시 북부기술교육원 2023년도 모집안내 포스터. 열기구와 설산 배경"></button>
+          <figcaption><strong>서울시 북부기술교육원 2023년도 모집안내</strong>교육과정 수업 작업</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="illustration">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Illustration</h2><span class="kr">일러스트</span><span class="count">5 works</span>
+      </div>
+      <div class="grid-3">
+        <figure>
+          <button class="piece" type="button" data-full="img/cat-1.jpg"><img src="img/cat-1.jpg" alt="분홍 고양이와 하얀 꽃, 분홍에서 초록으로 이어지는 배경"></button>
+          <figcaption><strong>고양이와 꽃</strong>기본 아트보드</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/cat-2.jpg"><img src="img/cat-2.jpg" alt="흰색 장식 프레임 안의 분홍 고양이와 하얀 꽃, 민트색 배경"></button>
+          <figcaption><strong>고양이와 꽃</strong>화이트 프레임 버전</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/cat-3.jpg"><img src="img/cat-3.jpg" alt="청록색 장식 프레임과 타원 안의 분홍 고양이와 하얀 꽃"></button>
+          <figcaption><strong>고양이와 꽃</strong>타원 프레임 버전</figcaption>
+        </figure>
+      </div>
+      <div class="grid-2">
+        <figure>
+          <button class="piece" type="button" data-full="img/cat-mockup-1.jpg"><img src="img/cat-mockup-1.jpg" alt="화이트 프레임 버전을 엽서 목업에 적용한 이미지"></button>
+          <figcaption><strong>엽서 목업</strong>화이트 프레임 버전</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/cat-mockup-2.jpg"><img src="img/cat-mockup-2.jpg" alt="타원 프레임 버전을 엽서 목업에 적용한 이미지"></button>
+          <figcaption><strong>엽서 목업</strong>타원 프레임 버전</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lotte">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Lotte FITIN</h2><span class="kr">롯데피트인 근무 시 제작한 매장 홍보물</span><span class="count">10 boards</span>
+      </div>
+      <div class="grid-2">
+        <figure>
+          <button class="piece" type="button" data-full="img/megabox-event.jpg"><img src="img/megabox-event.jpg" alt="롯데피트인 X 메가박스 협업 식음료 코너 이벤트 포스터"></button>
+          <figcaption><strong>롯데피트인 × 메가박스 협업 이벤트</strong>식음료 코너 이벤트 홍보 포스터</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/megabox-banner.jpg"><img src="img/megabox-banner.jpg" alt="메가박스 동대문점에 설치된 이벤트 배너 사진"></button>
+          <figcaption><strong>롯데피트인 × 메가박스 협업 이벤트</strong>메가박스 동대문점 배너 설치 사진</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/summer-sale.jpg"><img src="img/summer-sale.jpg" alt="롯데피트인 썸머세일 포스터 목업"></button>
+          <figcaption><strong>롯데피트인 썸머세일</strong>손글씨를 스캔해 일러스트레이터에서 다시 벡터화한 세일 포스터</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/summer-sale-pattern.jpg"><img src="img/summer-sale-pattern.jpg" alt="썸머세일 포스터를 반복 배치한 패턴 이미지"></button>
+          <figcaption><strong>롯데피트인 썸머세일</strong>포스터 패턴 이미지</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/summer-sale-pop.jpg"><img src="img/summer-sale-pop.jpg" alt="에스컬레이터 앞에 설치된 썸머세일 POP 사진"></button>
+          <figcaption><strong>롯데피트인 썸머세일</strong>에스컬레이터 앞 POP 설치 사진</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/chotukga.jpg"><img src="img/chotukga.jpg" alt="롯데피트인 초특가 전 포스터. 빨강, 노랑, 흰색 대비"></button>
+          <figcaption><strong>롯데피트인 초특가 전</strong>쇼핑백 모양을 강조하고 빨강·노랑·흰색으로 대비를 준 포스터</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/chotukga-pop.jpg"><img src="img/chotukga-pop.jpg" alt="에스컬레이터 앞에 설치된 초특가 전 POP 사진 두 장"></button>
+          <figcaption><strong>롯데피트인 초특가 전</strong>에스컬레이터 앞 POP 설치 사진</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/kids-season-off.jpg"><img src="img/kids-season-off.jpg" alt="5층 키즈 브랜드 시즌오프 특별전 POP 목업"></button>
+          <figcaption><strong>키즈 브랜드 시즌오프 특별전</strong>5층 키즈 브랜드 매장 행사 POP</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/playscape.jpg"><img src="img/playscape.jpg" alt="플레이스케이프 그림그리기 대회 POP 두 종"></button>
+          <figcaption><strong>플레이스케이프 그림그리기 대회</strong>키즈카페 어린이날 행사 POP</figcaption>
+        </figure>
+        <figure>
+          <button class="piece" type="button" data-full="img/cafe-the-med.jpg"><img src="img/cafe-the-med.jpg" alt="카페더메드 메뉴 홍보 포스터 파랑·빨강 두 종"></button>
+          <figcaption><strong>카페더메드 포스터</strong>4층 카페더메드 매장 메뉴 홍보 포스터</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="detail">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Detail Page</h2><span class="kr">새싹나무 칠판 쇼핑몰 상세페이지</span><span class="count">6 pages</span>
+      </div>
+      <div class="projects">
+        <article class="project">
+          <header class="project-head"><h3>도안 칠판 주문 안내</h3><p>주문 방법, 도안 종류와 프레임, 일반·자석 화이트보드 비교, 자주 묻는 질문, 주의사항, 시공 사례를 정리한 주문 안내 페이지</p></header>
+          <div class="grid-2">
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-doan-1.jpg"><img src="img/dp-doan-1.jpg" alt="도안 칠판 주문 안내 상세페이지를 세 구간으로 나눠 보여주는 이미지"></button>
+            <figcaption>상세페이지 구성</figcaption>
+          </figure>
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-doan-2.jpg"><img src="img/dp-doan-2.jpg" alt="도안 칠판 주문 안내 상세페이지 목업"></button>
+            <figcaption>목업</figcaption>
+          </figure>
+          </div>
+        </article>
+        <article class="project">
+          <header class="project-head"><h3>물칠판</h3><p>쇼룸 오픈 소개부터 물칠판의 장점 8가지, 기존 칠판과의 비교, 컬러·프레임·사이즈 안내까지 구성한 상세페이지. 컬러·프레임·사이즈 구간에 나열된 칠판 이미지는 블렌더로 제작했습니다</p></header>
+          <div class="grid-2">
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-water-1.jpg"><img src="img/dp-water-1.jpg" alt="물칠판 상세페이지를 다섯 구간으로 나눠 보여주는 이미지"></button>
+            <figcaption>상세페이지 구성</figcaption>
+          </figure>
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-water-2.jpg"><img src="img/dp-water-2.jpg" alt="물칠판 상세페이지 목업"></button>
+            <figcaption>목업</figcaption>
+          </figure>
+          </div>
+        </article>
+        <article class="project">
+          <header class="project-head"><h3>우드락 · 폼보드</h3><p>단면 접착 폼보드와 원단 백색 폼보드를 소개하는 상세페이지. 상단과 하단의 우드락, 폼보드 이미지는 블렌더로 제작했습니다</p></header>
+          <div class="grid-1">
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-woodrock.jpg"><img src="img/dp-woodrock.jpg" alt="우드락과 폼보드 상세페이지. 단면 접착 폼보드와 원단 백색 폼보드 구성"></button>
+            <figcaption>우드락 상세페이지 구성</figcaption>
+          </figure>
+          </div>
+        </article>
+        <article class="project">
+          <header class="project-head"><h3>유아 자석 물칠판</h3><p>3무 3유 특징, 후기 모음, 아이방 인테리어 활용, 컬러·프레임·사이즈, 사용 팁으로 구성한 상세페이지</p></header>
+          <div class="grid-2">
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-kids-1.jpg"><img src="img/dp-kids-1.jpg" alt="유아 자석 물칠판 상세페이지를 다섯 구간으로 나눠 보여주는 이미지"></button>
+            <figcaption>상세페이지 구성</figcaption>
+          </figure>
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-kids-2.jpg"><img src="img/dp-kids-2.jpg" alt="유아 자석 물칠판 상세페이지 목업"></button>
+            <figcaption>목업</figcaption>
+          </figure>
+          </div>
+        </article>
+        <article class="project">
+          <header class="project-head"><h3>자석 그림칠판</h3><p>파스텔 4색 보드, 16가지 도안, 사이즈 옵션을 소개하는 신제품 상세페이지. 도안에 들어간 동물과 중장비 그림은 직접 작업했습니다</p></header>
+          <div class="grid-1">
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-magnet-draw.jpg"><img src="img/dp-magnet-draw.jpg" alt="자석 그림칠판 상세페이지 목업"></button>
+            <figcaption>목업</figcaption>
+          </figure>
+          </div>
+        </article>
+        <article class="project">
+          <header class="project-head"><h3>하고로모 분필</h3><p>하고로모 분필의 특징, 사용 안내, 컬러 라인업, 분필 홀더·지우개를 소개하는 상품 페이지</p></header>
+          <div class="grid-1">
+          <figure>
+            <button class="piece" type="button" data-full="img/dp-hagoromo.jpg"><img src="img/dp-hagoromo.jpg" alt="하고로모 분필 상세페이지 목업"></button>
+            <figcaption>목업</figcaption>
+          </figure>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">박은주 · Portfolio 2026.11</div>
+</footer>
+
+<div class="lb" id="lb" hidden>
+  <button type="button" id="lb-close" aria-label="닫기">&times;</button>
+  <img id="lb-img" alt="">
+</div>
+
+<script>
+(function () {
+  var lb = document.getElementById('lb');
+  var lbImg = document.getElementById('lb-img');
+  var lastFocus = null;
+  function open(btn) {
+    var img = btn.querySelector('img');
+    lbImg.src = btn.getAttribute('data-full');
+    lbImg.alt = img ? img.alt : '';
+    lastFocus = btn;
+    lb.hidden = false;
+    document.getElementById('lb-close').focus();
+  }
+  function close() {
+    lb.hidden = true;
+    lbImg.removeAttribute('src');
+    if (lastFocus) lastFocus.focus();
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.piece') : null;
+    if (btn) { open(btn); return; }
+    if (!lb.hidden && e.target.closest('#lb')) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !lb.hidden) close();
+  });
+})();
+</script>
+</body>
+</html>
